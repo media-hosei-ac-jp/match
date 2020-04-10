@@ -1,0 +1,72 @@
+server:
+  contextPath: /semv2_be
+
+spring:
+  messages:
+    basename: messages_ja
+    cache-seconds: -1
+    encoding: utf-8
+  datasource:
+    url: jdbc:mysql://localhost:3306/semv2?useUnicode=true&characterEncoding=utf-8&characterSetResults=utf-8&zeroDateTimeBehavior=convertToNull
+    username: user
+    password: password
+    driverClassName: com.mysql.jdbc.Driver
+    testOnBorrow: true
+    validationQuery: SELECT 1
+    sqlScriptEncoding: UTF-8
+  jpa:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update
+        dialect: org.hibernate.dialect.MySQL5Dialect
+#    show-sql: false
+  jackson:
+    dateFormat: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Tokyo
+
+# Email (MailProperties)
+  mail:
+    default-encoding: UTF-8
+    protocol: smtp
+    host: example.com
+    port: 587
+    username: user
+    password: password
+    properties.mail.smtp.auth: true
+    properties.mail.smtp.starttls.enable: true
+
+#google oauth
+security:
+  basic:
+    enabled: false
+  oauth2:
+    client:
+      clientId: example.apps.googleusercontent.com
+      clientSecret: xxxxxxxxxxxxxxxxxxx
+      accessTokenUri: https://www.googleapis.com/oauth2/v4/token
+      userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth
+      clientAuthenticationScheme: form
+      scope:
+        - openid
+        - email
+        - profile
+    resource:
+      userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
+      preferTokenInfo: true
+ 
+#log output for deploy  
+logging:
+  file: ${CATALINA_HOME}/logs/semv2.log
+
+semv2:
+  frontendUrl: https://localhost/semv2/
+  adminPassword: password
+  wildcardCORSOrigin: true
+
+  mail:
+    enabled: true
+    ignoreDomain: example.com
+    bcc: 
+      - admin@example.com
+    from: no-reply@example.com

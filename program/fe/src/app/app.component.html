@@ -1,0 +1,139 @@
+<div class="header">
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <!--<div class="collapse navbar-collapse">-->
+      <div>
+        <ul [hidden]="auth" class="nav navbar-nav">
+          <!--
+          <li routerLinkActive="active">
+            <a routerLink="login"><span class="glyphicon glyphicon-log-in" title="ログイン画面です。"></span>&nbsp;ログイン</a>
+          </li>
+        -->
+        </ul>
+        <ul [hidden]="!auth" class="nav navbar-nav" title="ホーム画面です。お知らせを記載しています。">
+          <li routerLinkActive="active">
+            <a routerLink="home"><span class="glyphicon glyphicon-home" ></span>&nbsp;ホーム</a>
+          </li>
+        </ul>
+        <ul [hidden]="!auth" class="nav navbar-nav">
+          <li routerLinkActive="active">
+            <a routerLink="user"><span class="glyphicon glyphicon-user"></span>&nbsp;ユーザ</a>
+          </li>
+        </ul>
+        <ul [hidden]="!isTeacher" class="nav navbar-nav">
+          <li routerLinkActive="active">
+            <a routerLink="seminar"><span class="glyphicon ls-icon-laugh"></span>&nbsp;ゼミ</a>
+          </li>
+        </ul>
+        <ul [hidden]="!isStudent" class="nav navbar-nav">
+          <li routerLinkActive="active">
+            <a routerLink="apply"><span class="glyphicon ls-icon-laugh"></span>&nbsp;ゼミ応募</a>
+          </li>
+        </ul>
+        <ul [hidden]="!isTeacher" class="nav navbar-nav">
+          <li routerLinkActive="active">
+            <a routerLink="recr"><span class="glyphicon ls-icon-laugh"></span>&nbsp;ゼミ応募</a>
+          </li>
+        </ul>
+        <!--
+        <ul [hidden]="!(auth&&!isAdmin)" class="nav navbar-nav">
+          <li dropdown routerLinkActive="active">
+            <a dropdownToggle class="dropdown-toggle">
+              <span class="glyphicon glyphicon-file"></span>&nbsp;ゼミ応募
+              <span class="caret"></span>
+            </a>
+            <ul *dropdownMenu class="dropdown-menu" role="menu">
+              <li role="menuitem" [hidden]="!isTeacher">
+                <a class="dropdown-item" routerLink="recr"><span class="glyphicon glyphicon-book"></span>&nbsp;募集登録</a>
+              </li>
+              <li role="menuitem" [hidden]="!isStudent">
+                <a class="dropdown-item" routerLink="apply"><span class="glyphicon glyphicon-pencil"></span>&nbsp;応募登録</a>
+              </li>
+              <li role="menuitem" [hidden]="!isTeacher">
+                <a class="dropdown-item" routerLink="apply/confirm"><span class="glyphicon glyphicon-saved"></span>&nbsp;応募確認</a>
+              </li>
+              <li role="menuitem" [hidden]="!isStudent">
+                <a class="dropdown-item" routerLink="apply/result"><span class="glyphicon glyphicon-heart"></span>&nbsp;応募結果</a>
+              </li>
+            </ul>
+        </ul>
+      -->
+        <ul [hidden]="!auth" class="nav navbar-nav">
+          <li routerLinkActive="active">
+            <a routerLink="info"><span class=""></span>&nbsp;ゼミ一覧</a>
+          </li>
+        </ul>
+        <ul [hidden]="!(auth && isAdmin)" class="nav navbar-nav">
+          <li dropdown routerLinkActive="active">
+            <a dropdownToggle class="dropdown-toggle">
+              <span class="glyphicon glyphicon-cog"></span>&nbsp;管理者
+              <span class="caret"></span>
+            </a>
+            <ul *dropdownMenu class="dropdown-menu" role="menu">
+                <li role="menuitem">
+                <a class="dropdown-item" routerLink="admin-login"><span class="glyphicon glyphicon-bell"></span>&nbsp;代理ログイン</a>
+              </li>
+              <li role="menuitem">
+                <a class="dropdown-item" routerLink="user-import"><span class="glyphicon ls-icon-friend"></span>&nbsp;ユーザ一登録</a>
+              </li>
+              <li role="menuitem">
+                <a class="dropdown-item" routerLink="setting"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;募集設定</a>
+              </li>
+              <li role="menuitem">
+                <a class="dropdown-item" routerLink="admin-stats-list">募集状況</a>
+              </li>
+              <!--
+              <li role="menuitem">
+                <a class="dropdown-item" routerLink="notice"><span class="glyphicon glyphicon-bell"></span>&nbsp;お知らせ設定</a>
+              </li>
+              <li role="menuitem">
+                <a class="dropdown-item" routerLink="setting"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;募集設定</a>
+              </li>
+              <li role="menuitem">
+                <a class="dropdown-item" routerLink="mail"><span class="glyphicon glyphicon-envelope"></span>&nbsp;メール設定</a>
+              </li>
+              <li role="menuitem">
+                <a class="dropdown-item" routerLink="entry"><span class="glyphicon glyphicon-edit"></span>&nbsp;エントリーシート雛型編集</a>
+              </li>
+              <li role="menuitem">
+                <a class="dropdown-item" routerLink="user/import"><span class="glyphicon ls-icon-friend"></span>&nbsp;ユーザ一括取込</a>
+              </li>
+            -->
+            </ul>
+          </li>
+        </ul>
+        <ul [hidden]="auth" class="nav navbar-nav" style="float: right">
+        <li>
+          <a href="#" class="navbar-nav pull-right">
+            <a href="{{googleUrl}}" style="margin: -10px" class="btn btn-success green"><span class="glyphicon glyphicon-globe"></span>&nbsp;Gmailアカウントの切り替え</a>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="navbar-nav pull-right">
+            <a href="{{beUrl}}login" style="margin: -10px" class="btn btn-info blue"><span class="glyphicon glyphicon-log-in"></span>&nbsp;ログイン</a>
+          </a>
+        </li>
+        </ul>
+        <ul [hidden]="!auth" class="nav navbar-nav" style="float: right">
+          <li><p class="navbar-text">こんにちは　{{login.familyName}} {{login.givenName}} さん {{login.uid}} - [{{login.roles}}]</p></li>
+          <li><a href="#" class="navbar-nav pull-right">
+            <a href="{{beUrl}}logout" style="margin: -10px" class="btn btn-danger red"><span class="glyphicon glyphicon-log-out"></span>&nbsp;ログアウト</a>
+          </a></li>
+        </ul>
+      </div>
+
+  </div>
+</nav>
+{{currentPath}}
+<div class="container-fluid container-main">
+  <router-outlet></router-outlet>
+</div>
+
+<br />
+<div class="footer">
+  <div class="container-fluid">
+    <div class="text-right">
+      &copy; Copyright (C) 2017　法政大学　情報メディア教育研究センター
+    </div>
+  </div>
+</div>

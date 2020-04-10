@@ -1,0 +1,197 @@
+<div *ngIf="user">
+  <!-- 合格(確定者)がいる場合 start -->
+  <!-- 代理ログイン/管理者の場合 -->
+  <!--
+  <div [hidden]="!isAdmin" class="col_12">
+  	<div class="notice center warning">{{mode}}</div>
+  </div>
+-->
+  <div *ngFor="let setting of settings">
+    <h3>{{setting.title}}</h3>
+    <!-- 過程表記 -->
+    <div *ngIf="setting.tagArray">
+      <p>
+        開始
+        <span class="glyphicon glyphicon-play" [innerHTML]="setting.tagArray[0]"></span>希望ゼミへの応募
+        <span class="glyphicon glyphicon-play" [innerHTML]="setting.tagArray[1]"></span>選考に臨む
+        <span class="glyphicon glyphicon-play" [innerHTML]="setting.tagArray[2]"></span>合否を確認
+        <span class="glyphicon glyphicon-play" [innerHTML]="setting.tagArray[3]"></span>(合格の場合)ゼミの確定 (不合格の場合)次の募集への応募
+        <span class="glyphicon glyphicon-play"></span> 終了
+      </p>
+    </div>
+    <!-- 募集期間 start -->
+    <div class="row">
+      <div class="col-sm-6">
+        <h4>概要</h4>
+        <ul class="bg-info">
+          <li>
+            応募受付期間：{{setting.applicationStartDate | dateParse | date: 'yyyy年M月d日 H時mm分'}} 〜 {{setting.applicationEndDate | dateParse | date: 'M月d日 H時mm分' }}
+          </li>
+          <li>
+            <span> 最大応募可能数: {{ setting.maximum }}</span>
+          </li>
+          <li>
+            応募状況公開：{{ setting.displayType=='ALWAYS'? "リアルタイムに表示":"応募受付締め切り後に表示" }}
+
+          </li>
+          <li>
+            選考実施期間： {{ setting.selectionStartDate | dateParse | date: 'yyyy年M月d日 H時mm分' }} 〜 {{ setting.selectionEndDate | dateParse | date: 'M月d日 H時mm分' }}
+          </li>
+          <li>
+            合格先ゼミ登録期間： {{ setting.registrationStartDate | dateParse | date: 'yyyy年M月d日 H時mm分' }} 〜 {{ setting.registrationEndDate | dateParse | date: 'M月d日 H時mm分' }}
+          </li>
+          <li *ngIf="setting.addSelectionStartDate != null">
+            追加選考実施期間： {{ setting.addSelectionStartDate | dateParse | date: 'yyyy年M月d日 H時mm分' }} 〜 {{ setting.addSelectionEndDate | dateParse | date: 'M月d日 H時mm分' }}
+          </li>
+          <li *ngIf="setting.addRegistrationStartDate != null">
+            追加合格先ゼミ登録期間： {{ setting.addRegistrationStartDate | dateParse | date: 'yyyy年M月d日 H時mm分' }} 〜 {{ setting.addRegistrationEndDate | dateParse | date: 'M月d日 H時mm分' }}
+          </li>
+        </ul>
+      </div>
+      <!-- 募集期間 end -->
+      <!-- 応募一覧 -->
+      <div class="col-sm-6">
+        <div *ngIf="setting.apps && setting.apps.length > 0">
+          <h4>応募中のゼミ一覧</h4>
+          <div *ngFor="let app of setting.apps" class="panel panel-default">
+            <div class="panel-heading">{{app.recruitment.seminar.title}}</div>
+            <div class="panel-body">
+              <div *ngIf="!(setting.applicationStartDate<nowStr&&nowStr<setting.applicationEndDate)||app.owner.confirmed">
+                自己PR:<br /> {{app.pr}}
+              </div>
+              <div *ngIf="(setting.applicationStartDate<nowStr&&nowStr<setting.applicationEndDate)&&!app.owner.confirmed">
+
+                <form name="edit_form-{{app.id}}" id="edit_form-{{app.id}}" method="post">
+                  <div class="form-group">
+                    <label>選考方法</label>
+                    <p class="form-control-static" style="white-space: pre-wrap">{{app.recruitment.info}}</p>
+
+                  </div>
+                  <div class="form-group">
+                    <label for="pr-{{app.id}}">
+                自己PR
+                <span class="text-danger">*</span><br />
+                <small>
+                自己PRを入力してください。({{prMaxLength}}文字以内)
+              </small>
+              </label>
+                    <textarea style="width: 100%" name="pr-{{app.id}}" id="pr-{{app.id}}" [(ngModel)]="app.pr" placeholder="" class="form-control" maxlength="{{prMaxLength}}" [rows]="getRows(app.pr,10)" required>
+              </textarea>
+                  </div>
+                  <div class="form-group">
+                    <button [disabled]="sending" class="btn btn-info" (click)="saveApp(app)">
+              <span class="glyphicon glyphicon-floppy-disk"></span>&nbsp;自己PRを更新する</button>
+                  </div>
+
+            <div class="form-group" *ngIf="setting.applicationStartDate <nowStr && nowStr < setting.applicationEndDate">
+              <button [disabled]="sending" (click)="deleteApp(app)" class="btn btn-danger red">この応募を取り消す</button><br />
+              <!--
+              <span class="text-danger">合格した応募を取り消すと合格が無効になるので注意してください。</span>
+            -->
+            </div>
+
+                </form>
+              </div>
+
+
+
+              <div *ngIf="app.passed==null&&!app.recruitment.confirmed" class="well">
+                選考結果はここに表示されます。<br /> 合否が決定するまでお待ちください。
+              </div>
+
+              <div *ngIf="app.passed && !app.confirmed" class="bg-success center">
+                選考結果
+                <h5 class="alert alert-success">
+合格
+</h5> このゼミの選考に合格しました。
+                <br />
+                <div *ngIf="!user.confirmed">
+                  <div *ngIf="(setting.registrationStartDate < nowStr && nowStr < setting.registrationEndDate) ||
+                          (setting.addRegistrationStartDate < nowStr && nowStr < setting.addRegistrationEndDate); else confirmElseBlock">
+
+                    このゼミへの配属を確定する場合には以下のボタンを押してください。<br />
+                    <span class="text-danger">※確定後に取り消しはできないので注意してください。</span><br />
+                    <button *ngIf="!user.confirmed" [disabled]="sending" (click)="confirmApp(app)" class="btn btn-success">確定する</button>
+                  </div>
+                  <ng-template #confirmElseBlock>
+                  <div *ngIf="nowStr > setting.registrationEndDate">
+                    ゼミの登録期間は終了しました。
+                  </div>
+                  <div *ngIf="setting.addRegistrationEndDate && nowStr > setting.addRegistrationEndDate">
+                    ゼミの追加登録期間は終了しました。
+                  </div>
+                </ng-template>
+                </div>
+                <div *ngIf="user.confirmed">
+                  すでに他ゼミへの配属が確定しています。
+                </div>
+              </div>
+
+              <div *ngIf="app.passed && app.confirmed" class="bg-info center">
+                選考結果
+                <h5 class="alert alert-info">
+合格（配属確定）
+</h5> このゼミへの配属が確定しました。
+                <br />
+              </div>
+
+
+
+              <!-- 不合格 -->
+              <div *ngIf="!app.passed&&app.recruitment.confirmed" class="bg-warning center">
+                選考結果
+                <h5 class="alert alert-warning">
+不合格
+</h5> このゼミの選考結果は不合格でした。
+                <br /> 次の募集に応募してください。
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 募集終了 start -->
+        <!--
+    -->
+        <div *ngIf="setting.newApp && !setting.recrs">
+          <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i> Now Loading...
+        </div>
+        <div *ngIf="setting.newApp && setting.recrs">
+          <!--
+    <div class="notice center warning" [innerHTML]="setting.pMsg" *ngIf="setting.addSelectionStartDate > nowStr">
+    </div>
+  -->
+          <h4>新規応募フォーム</h4>
+          <span class="text-danger">*</span><span class="small">…必須項目</span>
+          <form name="appl_form-{{setting.id}}" id="appl_form-{{setting.id}}" method="post">
+            <div class="form-group">
+
+              <label for="recruitment_id">希望するゼミ <span class="text-danger">*</span><br />
+        <small>選考がすでに終了したゼミは一覧には表示されません。</small></label>
+              <select [(ngModel)]="setting.newApp.recruitment" name="recruitment" id="recruitment_id-{{setting.id}}" class="form-control" required>
+         <option value="">-- 選択してください --</option>
+    	   <option *ngFor="let recr of setting.recrs" [ngValue]="recr" >{{recr.seminar.title}}</option>
+      </select>
+            </div>
+            <div class="form-group">
+              <label for="pr-{{setting.id}}">
+            自己PR
+              <span class="text-danger">*</span><br />
+              <small>
+              自己PRを入力してください。({{prMaxLength}}文字以内)
+            </small>
+            </label>
+              <textarea style="width: 100%" name="pr-{{setting.id}}" id="pr-{{setting.id}}" [(ngModel)]="setting.newApp.pr" placeholder="" class="form-control" maxlength="{{prMaxLength}}" [rows]="getRows(setting.newApp.pr,10)" required>
+            </textarea>
+
+            </div>
+            <div class="form-group">
+              <button [disabled]="sending" class="btn btn-info" (click)="saveApp(setting.newApp)">
+                <span class="glyphicon glyphicon-floppy-disk"></span>&nbsp;応募する</button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

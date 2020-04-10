@@ -1,0 +1,29 @@
+legend {
+  color: white;
+  background-color: grey;
+}
+fieldset {
+  background-color: #CBFFD3;
+}
+.setting {
+  background-color: #FFFFDD;
+}
+
+.print {
+  display: none;
+}
+
+/*
+.print ul {
+  border-style: solid;
+}
+
+.print ul li {
+  border-style: solid;
+}
+
+*/
+
+.pre {
+  white-space: pre-wrap;
+}

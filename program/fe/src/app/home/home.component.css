@@ -1,0 +1,10 @@
+.home {
+    min-height: calc(100vmin - 300px);
+    white-space: pre-wrap;
+}
+
+.info {
+    border-style: dotted;
+    margin: 16px;
+    padding: 8px;
+}

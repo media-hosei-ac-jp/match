@@ -1,0 +1,5 @@
+<form name="loginForm">
+  ID: <input name="uid" [(ngModel)]="uid" type="text" />
+  <button (click)="login()" class="btn btn-info">代理ログイン</button>
+  <span [hidden]="!err" class="alert alert-danger">代理ログインに失敗しました。</span>
+</form>

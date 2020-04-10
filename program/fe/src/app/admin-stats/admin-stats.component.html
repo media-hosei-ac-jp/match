@@ -1,0 +1,389 @@
+<div *ngIf="!stats"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+Now Loading...</div>
+<div *ngIf="stats">
+
+<h3>募集状況 - {{stats.setting.title}}</h3>
+<div class="pull-right">
+  <button (click)="download()" class="btn btn-default">集計結果をダウンロードする</button>
+  <button (click)="downloadRecr()" class="btn btn-default">募集情報を印刷する</button>
+  <button (click)="downloadPass()" class="btn btn-default">合格情報を印刷する</button>
+  {% comment %} <button (click)="downloadPass()" (contextmenu)="downloadAddPass()" class="btn btn-default">合格情報を印刷する</button> {% endcomment %}
+  <button *ngIf="stats.setting.registrationStartDate && admin" (click)="downloadAddPass()" class="btn btn-default">追加合格情報を印刷する</button>
+  <button *ngIf="stats.setting.maximum==1" (click)="confirmAll()" class="btn btn-default">未確定の応募を一括確定する</button>
+</div>
+<div style="clear"></div>
+
+<table class="table table-striped table-bordered">
+<thead>
+  <tr>
+    <th>
+
+    </th>
+    <th *ngFor="let i of [1,2,3,4]">
+      {{i}}年生
+    </th>
+    <!--
+    <th>
+      のべ人数
+    </th>
+  -->
+    <th>
+      合計
+    </th>
+  </tr>
+</thead>
+<tbody>
+
+  <tr>
+    <th>
+      応募者数
+    </th>
+    <td *ngFor="let n of stats.applicantCounts; let i = index" [hidden]="i==0">
+      {{n}}
+    </td>
+    <td>
+      {{sum(stats.applicantCounts)}}
+    </td>
+  </tr>
+
+  <tr>
+    <th>
+      初回合格者数
+    </th>
+    <td *ngFor="let n of stats.passCounts; let i = index" [hidden]="i==0">
+      {{n}}
+    </td>
+    <td>
+      {{sum(stats.passCounts)}}
+    </td>
+  </tr>
+
+  <tr>
+    <th>
+      追加合格者数
+    </th>
+    <td *ngFor="let n of stats.addPassCounts; let i = index" [hidden]="i==0">
+      {{n}}
+    </td>
+    <td>
+      {{sum(stats.addPassCounts)}}
+    </td>
+  </tr>
+
+  <tr>
+    <th>
+      初回ゼミ確定者数
+    </th>
+    <td *ngFor="let n of stats.confirmCounts; let i = index" [hidden]="i==0">
+      {{n}}
+    </td>
+    <td>
+      {{sum(stats.confirmCounts)}}
+    </td>
+  </tr>
+
+  <tr>
+    <th>
+      追加合格ゼミ確定者数
+    </th>
+    <td *ngFor="let n of stats.addConfirmCounts; let i = index" [hidden]="i==0">
+      {{n}}
+    </td>
+    <td>
+      {{sum(stats.addConfirmCounts)}}
+    </td>
+  </tr>
+
+</tbody>
+</table>
+
+<div>
+  青色は選考が終了しているゼミです。
+</div>
+<table class="table table-striped table-bordered">
+<thead>
+  <tr>
+    <td>
+      ゼミ名称
+    </td>
+    <td>
+      uid
+    </td>
+    <td>
+      応募者数
+    </td>
+    <td>
+      初回合格者数
+    </td>
+    <td>
+      追加合格者数
+    </td>
+    <td>
+      初回ゼミ確定者数
+    </td>
+    <td>
+      追加合格ゼミ確定者数
+    </td>
+  </tr>
+
+
+</thead>
+<tbody>
+  <tr *ngFor="let r of stats.rsdl" [ngClass]="{'info': r.recr.confirmed}">
+    <td>
+      <a routerLink="/admin-recr/{{r.recr.id}}">{{r.recr.seminar.title}}</a>
+    </td>
+    <td>
+      {{r.recr.seminar.owner.uid}}
+    </td>
+    <td>
+      {{sum(r.appCounts)}}
+    </td>
+    <td>
+      {{sum(r.passCounts)}}
+    </td>
+    <td>
+      {{sum(r.addPassCounts)}}
+    </td>
+    <td>
+      {{sum(r.confirmCounts)}}
+    </td>
+    <td>
+      {{sum(r.addConfirmCounts)}}
+    </td>
+  </tr>
+</tbody>
+</table>
+</div>
+
+<!-- 募集票 印刷 -->
+<div *ngIf="stats" id="print-recr" class="clearfix print">
+  <div *ngFor="let r of stats.rsdl; let i=index">
+  <div *ngIf="r.recr as recr">
+  <div *ngIf="i>0" style="page-break-before: always;"></div>
+  <h2 class="center"><small>{{recr.setting.title}}<br></small>{{recr.seminar.title}} ゼミ生募集票</h2>
+  <div class="col_12 inner column">
+    <div class="inner">
+      <h4>募集人数</h4>
+      <ul>
+        <li *ngIf="recr.grade1>0">現1年生： {{recr.grade1}}名</li>
+        <li *ngIf="recr.grade2>0">現2年生： {{recr.grade2}}名</li>
+        <li *ngIf="recr.grade3>0">現3年生： {{recr.grade3}}名</li>
+        <li *ngIf="recr.grade4>0">現4年生： {{recr.grade4}}名</li>
+      </ul>
+    </div>
+  </div>
+  <div class="col_12 inner column">
+    <div class="inner">
+      <h4>選考方法</h4>
+      <ul>
+        <li style="white-space: pre-wrap">{{recr.info}}</li>
+      </ul>
+    </div>
+  </div>
+  </div>
+  </div>
+</div>
+
+<!-- 合格情報 印刷 -->
+<div *ngIf="stats" id="print-sel" class="clearfix print">
+  <div *ngFor="let r of stats.rsdl; let i=index">
+  <div *ngIf="r.recr as recr">
+  <div *ngIf="i>0" style="page-break-before: always;"></div>
+  <h2 class="center" style="text-align: center"><small>{{recr.setting.title}}<br></small>{{recr.seminar.title}} 合格者</h2>
+  <div *ngFor="let apps of recr.passedApps; let i = index" class="col_12 inner column">
+    <div *ngIf="i>=1" class="inner">
+      <h4>{{i}}年生 {{apps.length}}名</h4>
+      <div *ngIf="apps.length==0">
+        該当者なし
+      </div>
+      <div *ngIf="apps.length>0">
+        <table style="width:100%">
+          <tbody>
+            <tr>
+              <td>
+                <table class="bordered" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th>
+                        学生証番号
+                      </th>
+                      <th>
+                        名前
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let app of apps; let i = index" [hidden]="i>=apps.length/2">
+                      <td>
+                        {{app.owner.uid}}
+                      </td>
+                      <td>
+                        {{app.owner.familyName}} {{app.owner.givenName}}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+              <td>
+                <table class="bordered" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th>
+                        学生証番号
+                      </th>
+                      <th>
+                        名前
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let app of apps; let i = index" [hidden]="i<apps.length/2">
+                      <td>
+                        {{app.owner.uid}}
+                      </td>
+                      <td>
+                        {{app.owner.familyName}} {{app.owner.givenName}}
+                      </td>
+                    </tr>
+                    <tr *ngIf="apps.length%2==1">
+                      <td>&nbsp;</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+  <table style="width:100%">
+    <tr>
+      <td style="border-style: solid; width: 50%">
+        <ul>
+          <li>
+            □ 追加募集なし（最終決定）
+          </li>
+          <li>
+            □ 追加募集あり
+          </li>
+        </ul>
+        <!--
+          <div style="text-align: center">*1、2次募集のみ</div> -->
+      </td>
+      <td style="border-style: solid; width:50%; text-align: top">
+        連絡事項
+        <br />
+        <br />
+        <br />
+        <br />
+      </td>
+  </table>
+</div>
+</div>
+
+
+<!-- 追加合格情報 印刷 -->
+<div *ngIf="stats" id="print-sel-add" class="clearfix print">
+  <div *ngFor="let r of stats.rsdl; let i=index">
+  <div *ngIf="r.recr as recr">
+  <div *ngIf="i>0" style="page-break-before: always;"></div>
+  <h2 class="center" style="text-align: center"><small>{{recr.setting.title}}<br></small>{{recr.seminar.title}} 追加合格者</h2>
+  <div *ngFor="let apps of recr.passedAddApps; let i = index" class="col_12 inner column">
+    <div *ngIf="i>=1" class="inner">
+      <h4>{{i}}年生 {{apps.length}}名</h4>
+      <div *ngIf="apps.length==0">
+        該当者なし
+      </div>
+      <div *ngIf="apps.length>0">
+        <table style="width:100%">
+          <tbody>
+            <tr>
+              <td>
+                <table class="bordered" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th>
+                        学生証番号
+                      </th>
+                      <th>
+                        名前
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let app of apps; let i = index" [hidden]="i>=apps.length/2">
+                      <td>
+                        {{app.owner.uid}}
+                      </td>
+                      <td>
+                        {{app.owner.familyName}} {{app.owner.givenName}}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+              <td>
+                <table class="bordered" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th>
+                        学生証番号
+                      </th>
+                      <th>
+                        名前
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let app of apps; let i = index" [hidden]="i<apps.length/2">
+                      <td>
+                        {{app.owner.uid}}
+                      </td>
+                      <td>
+                        {{app.owner.familyName}} {{app.owner.givenName}}
+                      </td>
+                    </tr>
+                    <tr *ngIf="apps.length%2==1">
+                      <td>&nbsp;</td>
+                      <td>&nbsp;</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+  <table style="width:100%">
+    <tr>
+      <td style="border-style: solid; width: 50%">
+        <ul>
+          <li>
+            □ 追加募集なし（最終決定）
+          </li>
+          <li>
+            □ 追加募集あり
+          </li>
+        </ul>
+        <!--
+          <div style="text-align: center">*1、2次募集のみ</div> -->
+      </td>
+      <td style="border-style: solid; width:50%; text-align: top">
+        連絡事項
+        <br />
+        <br />
+        <br />
+        <br />
+      </td>
+  </table>
+</div>
+</div>
+
+</div>

@@ -1,0 +1,15 @@
+.container-fluid {
+  padding-right: 30px;
+  padding-left: 30px;
+}
+@media screen and (min-width: 800px) {
+  .container-main {
+    padding-right: 60px !important;
+    padding-left: 60px !important;
+  }
+}
+
+/* for modal */
+.pre {
+  white-space: pre-wrap;
+}

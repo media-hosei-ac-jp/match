@@ -1,0 +1,78 @@
+<div *ngIf="app && recrs; else elseBlock">
+
+<h3>{{app.recruitment.setting.title}} {{app.recruitment.seminar.title}} 応募情報 -  {{app.owner.uid}} {{app.owner.familyName}} {{app.owner.givenName}}</h3>
+  <span class="text-danger">*</span><span class="small">…必須項目</span>
+  <form name="appl_form" id="appl_form" method="post">
+    <div class="form-group">
+
+      <label for="recruitment_id">希望するゼミ <span class="text-danger">*</span></label>
+      <!--
+      <select [(ngModel)]="app.recruitment" name="recruitment" id="recruitment_id" class="form-control" required>
+ <option value="">-- 選択してください --</option>
+ <option *ngFor="let recr of recrs" [ngValue]="recr" >{{recr.seminar.title}}</option>
+</select>
+-->
+      <span class="form-control-static">{{app.recruitment.seminar.title}}</span>
+    </div>
+    <div class="form-group">
+      <label for="pr">
+    自己PR
+      <span class="text-danger">*</span><br />
+    </label>
+      <textarea style="width: 100%" name="pr" id="pr" [(ngModel)]="app.pr" placeholder="" class="form-control"  [rows]="getRows(app.pr,10)" required>
+    </textarea>
+
+    </div>
+    <div class="form-group">
+      <button [disabled]="sending" class="btn btn-info" (click)="saveApp(app)">
+        <span class="glyphicon glyphicon-floppy-disk"></span>&nbsp;更新する</button>
+    </div>
+
+  </form>
+  <hr />
+  <ul>
+    <li>
+      合否状態:
+      <span *ngIf="app.passed==null">合否未入力</span>
+      <span *ngIf="app.passed && app.addPassed==null">初回合格</span>
+      <span *ngIf="app.passed==false && app.addPassed==null">初回不合格</span>
+      <span *ngIf="app.passed && app.addPassed==true">追加合格</span>
+      <span *ngIf="app.passed==false && app.addPassed==false">追加不合格</span>
+    </li>
+    <li>
+      確定状態:
+      <span *ngIf="!app.owner.confirmed">未確定</span>
+      <span *ngIf="app.owner.confirmed && app.confirmed">このゼミに確定済み</span>
+      <span *ngIf="app.owner.confirmed && !app.confirmed">他のゼミに確定済み</span>
+    </li>
+    <li *ngIf="app.deleted" class="text-danger">
+      この応募は既に削除されています。
+    </li>
+  </ul>
+  <button (click)="confirmApp(true)" *ngIf="!app.owner.confirmed&&app.passed" class="btn btn-primary">このゼミに確定する</button>
+  <button (click)="confirmApp(false)" *ngIf="app.confirmed" class="btn btn-warning">このゼミの確定を解除する</button>
+  <br />
+  <br />
+  <div *ngIf="app.owner.confirmed">
+    ゼミを確定済みのため下記の操作はできません。確定したゼミを解除すると下記の操作が可能になります。
+  </div>
+  <button (click)="set1stPassed(true)" [disabled]="app.owner.confirmed" class="btn btn-primary">初回合格に設定する</button>
+  <button (click)="set1stPassed(false)" [disabled]="app.owner.confirmed" class="btn btn-warning">初回不合格に設定する</button>
+  <br />
+  <br />
+  <button (click)="setAddPassed(true)" [disabled]="app.owner.confirmed" class="btn btn-primary">追加合格に設定する</button>
+  <button (click)="setAddPassed(false)" [disabled]="app.owner.confirmed" class="btn btn-warning">追加不合格に設定する</button>
+  <br />
+  <br />
+  <br />
+  <br />
+  <button *ngIf="!app.deleted" (click)="sendResultMail(app.id)" class="btn btn-primary">選考結果メールを再送する</button>
+  <br />
+  <br />
+  <button *ngIf="!app.deleted" (click)="deleteApp(true)" [disabled]="sending || app.owner.confirmed" class="btn btn-danger">この応募を削除する</button>
+  <button *ngIf="app.deleted" (click)="deleteApp(false)" [disabled]="sending || app.owner.confirmed" class="btn btn-warning">削除を取り消す</button>
+</div>
+<ng-template #elseBlock>
+  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+  Now Loading...
+</ng-template>

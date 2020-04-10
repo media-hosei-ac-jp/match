@@ -1,0 +1,235 @@
+<div *ngIf="userData">
+  <form #userForm name="user" id="user" class="form-horizontal">
+    <span>
+      <span class="text-danger">*</span>
+      <span class="small">…必須項目</span>
+    </span>
+
+    <div class="form-group">
+      <label for="uid" class="col-sm-2 control-label">
+        ユーザID
+        <span class="text-danger">*</span>
+      </label>
+      <div class="col-sm-2">
+        <input name="uid" id="uid" type="text" [(ngModel)]="userData.uid" placeholder="" class="form-control" readonly
+          required />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="lastname" class="col-sm-2 control-label">
+        名前
+        <span class="text-danger">*</span>
+      </label>
+      <div class="col-sm-3">
+        <input name="lastname" id="lastname" type="text" [(ngModel)]="userData.familyName" placeholder=""
+          class="form-control" readonly required />
+      </div>
+      <div class="col-sm-3">
+        <input name="firstname" id="firstname" type="text" [(ngModel)]="userData.givenName" placeholder=""
+          class="form-control" readonly required />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="kana_lastname" class="col-sm-2 control-label">
+        名前(よみ)<span class="text-danger">*</span>
+      </label>
+
+      <div class="col-sm-3">
+        <input name="kana_lastname" id="kana_lastname" type="text" [(ngModel)]="userData.kanaFamilyName" placeholder=""
+          class="form-control" readonly required />
+      </div>
+      <div class="col-sm-3">
+        <input name="kana_firstname" id="kana_firstname" type="text" [(ngModel)]="userData.kanaGivenName" placeholder=""
+          class="form-control" readonly required />
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label for="email" class="col-sm-2 control-label">
+        メールアドレス
+        <span class="text-danger">*</span>
+      </label>
+      <div class="col-sm-3">
+        <input name="email" id="email" type="email" [(ngModel)]="userData.email" placeholder="" class="form-control"
+          readonly required />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="mobile_email" class="col-sm-2 control-label">
+        メールアドレス(携帯)
+      </label>
+      <div class="col-sm-3">
+        <input name="mobile_email" id="mobile_email" type="email" [(ngModel)]="userData.mobileEmail" placeholder=""
+          class="form-control" />
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label for="phone" class="col-sm-2 control-label">
+        電話番号
+      </label>
+      <div class="col-sm-3">
+        <input name="phone" id="phone" type="tel" [(ngModel)]="userData.phoneNumber" placeholder=""
+          class="form-control" />
+      </div>
+    </div>
+    <!-- <div class="form-group">
+      <label for="mobile" class="col-sm-2 control-label">
+        携帯番号
+      </label>
+      <div class="col-sm-3">
+      <input name="mobile" id="mobile" type="tel" [(ngModel)]="userData.mobileNumber" placeholder="" class="form-control" />
+    </div>
+    </div> -->
+    <div class="form-group">
+      <label for="faculty" class="col-sm-2 control-label">
+        所属
+        <!-- span class="text-danger">*</span -->
+      </label>
+      <div class="col-sm-3">
+        <input name="faculty" id="faculty" type="text" [(ngModel)]="userData.faculty" placeholder=""
+          class="form-control" readonly required />
+      </div>
+      <div class="col-sm-3">
+        <input name="department" id="department" type="text" [(ngModel)]="userData.department" placeholder=""
+          class="form-control" readonly required />
+      </div>
+    </div>
+
+    <div *ngIf="isStudent">
+      <div class="form-group">
+        <label for="grade" class="col-sm-2 control-label">
+          学年
+          <span class="text-danger">*</span>
+        </label>
+        <div class="col-sm-1">
+          <input name="grade" id="grade" type="text" [(ngModel)]="userData.grade" class="form-control" readonly
+            required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="gender" class="col-sm-2 control-label">
+          性別
+          <span class="text-danger">*</span>
+        </label>
+        <div class="col-sm-1">
+          <input name="gender" id="gender" type="text" [(ngModel)]="userData.gender" class="form-control" readonly
+            required>
+        </div>
+      </div>
+
+      <!-- <div class="form-group">
+        <label for="birthday" class="col-sm-2 control-label">
+          誕生日
+          <span class="text-danger">*</span><br />
+          <small>入力例) 1999-01-01</small>
+        </label> -->
+        <!--
+      <input name="birthday" id="birthday" type="date" [ngModel]="userData.birthday | date: 'yyyy-MM-dd'" (ngModelChange)="userData.user.birthday=$event"  placeholder="" class="col_3" required >
+    -->
+        <!-- <div *ngIf="userData.birthday" class="col-sm-2">
+          <div type="text" class="form-control-static">{{userData.birthday | dateParse | date: 'yyyy-MM-dd'}}</div>
+        </div>
+        <div class="col-sm-2"> -->
+          <!--
+          <input name="birthday" id="birthday" type="date" [ngModel]="userData.birthday | date: 'yyyy-MM-dd'" (ngModelChange)="setBirthday(userData, $event)" placeholder="" class="form-control" required>
+        -->
+          <!--
+          <dp-date-picker name="birthday" [(ngModel)]="birthday" [config]="dpConfig" required></dp-date-picker>
+        -->
+          <!-- <my-date-picker defaultMonth="01/1999" locale="ja" [options]="dpOptions" name="birthday"
+            (dateChanged)="onDateChanged($event)" [(ngModel)]="birthday"></my-date-picker>
+        </div>
+      </div> -->
+
+      <!-- <div class="form-group">
+        <label for="postcode" class="col-sm-2 control-label">
+          郵便番号
+          <span class="text-danger">*</span>
+          <br />
+          <small>半角数字7桁、ハイフン不要</small>
+        </label>
+        <div class="col-sm-2">
+          <input name="postcode" id="postcode" type="number" [(ngModel)]="userData.postalcode" placeholder=""
+            class="form-control" maxlength="7" required />
+          <br />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="address" class="col-sm-2 control-label">
+          住所
+          <span class="text-danger">*</span>
+        </label>
+        <div class="col-sm-10">
+          <input name="address" id="address" type="text" [(ngModel)]="userData.address" placeholder="住所"
+            class="form-control" required />
+          <br />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="club" class="col-sm-2 control-label">
+          部活動、サークル等
+          <br />
+          <small>【複数の場合】、で区切る</small>
+        </label>
+        <div class="col-sm-3">
+          <input name="club" id="club" type="text" [(ngModel)]="userData.club" placeholder="" class="form-control" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="hobby" class="col-sm-2 control-label">
+          趣味
+          <br />
+          <small>【複数の場合】、で区切る</small>
+        </label>
+        <div class="col-sm-3">
+          <input name="hobby" id="hobby" type="text" [(ngModel)]="userData.hobby" placeholder="" class="form-control" />
+          <br />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="qualification" class="col-sm-2 control-label">
+          特技、資格等
+          <br />
+          <small>【複数の場合】、で区切る</small>
+        </label>
+        <div class="col-sm-10">
+          <input name="qualification" id="qualification" type="text" [(ngModel)]="userData.qualification" placeholder=""
+            class="form-control" />
+          <br />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="highschool" class="col-sm-2 control-label">
+          出身高校
+          <span class="text-danger">*</span>
+          <br />
+          <small>(入力例)東京都私立法政大学第一高等学校</small>
+        </label>
+        <div class="col-sm-10">
+          <input name="highschool" id="highschool" type="text" [(ngModel)]="userData.highschool" placeholder=""
+            class="form-control" required />
+          <br />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="url" class="col-sm-2 control-label">
+          facebook、ブログ等のURL
+        </label>
+        <div class="col-sm-10">
+          <input name="url" id="url" type="url" [(ngModel)]="userData.url" placeholder="" class="form-control" />
+        </div>
+      </div> -->
+    </div>
+    <div class="pull-right">
+      <button [disabled]="sending" style="margin: 20px" class="btn btn-info green" (click)="putUser()">
+        <span class="glyphicon glyphicon-floppy-disk"></span>&nbsp;更新する</button>
+
+    </div>
+  </form>
+</div>

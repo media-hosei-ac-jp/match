@@ -1,0 +1,40 @@
+<div id="wrap" class="clearfix">
+  <div>
+    <form name="setting-form" id="setting-form" enctype="multipart/form-data" method="post">
+      <label>
+        新規募集追加
+      </label>
+      <input name="setting-file" id="setting-file" type="file" accept="text/xlsx"  (change)="settingFileOnChange($event)" />
+
+      <button [disabled]="sending" class="btn btn-info pink" (click)="addSetting()"><span class="glyphicon glyphicon-upload"></span>&nbsp;アップロード</button>
+      <span *ngIf="setSuccessful" class="alert alert-success">正常に登録しました</span>
+      <span *ngIf="setErr!=null&&setErr" class="alert alert-danger">登録に失敗しました</span>
+      <hr />
+
+      <div *ngFor="let setting of settings; let i = index">
+        <label>
+          {{setting.title}}
+        </label><br />
+        <a routerLink="/setting-recrs/{{setting.id}}" class="btn btn-default">定員設定一覧</a><br />
+
+        <label>定員設定</label>
+        <input name="setting-{{i}}-file" id="setting-{{i}}-file" type="file" accept="text/xlsx"  (change)="fileOnChange($event, i)" />
+
+        <button [disabled]="sending" class="btn btn-info pink" (click)="addRecrs(setting)"><span class="glyphicon glyphicon-upload"></span>&nbsp;アップロード</button>
+        <span *ngIf="setting.successful" class="alert alert-success">正常に登録しました</span>
+        <span *ngIf="setting.err!=null&&setting.err" class="alert alert-danger">登録に失敗しました</span>
+        <br />
+
+        <label>応募設定の修正</label>
+        <input name="setting-info-{{i}}-file" id="setting--info{{i}}-file" type="file" accept="text/xlsx"  (change)="updateSettingFileOnChange($event, i)" />
+
+        <button [disabled]="sending" class="btn btn-info pink" (click)="updateSetting(setting)"><span class="glyphicon glyphicon-upload"></span>&nbsp;アップロード</button>
+        <span *ngIf="setting.upSuccessful" class="alert alert-success">正常に登録しました</span>
+        <span *ngIf="setting.upErr!=null&&setting.upErr" class="alert alert-danger">登録に失敗しました</span>
+
+        <hr />
+      </div>
+
+    </form>
+  </div>
+</div>

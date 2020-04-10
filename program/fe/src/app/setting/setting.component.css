@@ -1,0 +1,24 @@
+.file_uploiad {
+  /*display: inline;*/
+  margin: 5px;
+  padding: 5px;
+  display: none;
+}
+
+.lbl_file {
+  margin: 5px;
+  height: 40px;
+  color: white;
+  background-color: darkblue;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.lbl_file:hover {
+  opacity: 0.5 ;
+}
+
+
+.table_div {
+  padding: 5px;
+}

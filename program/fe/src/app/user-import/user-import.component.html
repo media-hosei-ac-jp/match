@@ -1,0 +1,30 @@
+<div id="wrap" class="clearfix">
+  <div>
+    <form name="user" id="user" enctype="multipart/form-data" method="post">
+      <label>
+        学生登録
+      </label>
+      <input type="file" accept="text/xlsx" (change)="fileOnChange($event, 'studentData')"/>
+      <button [disabled]="sending" class="btn btn-info pink" (click)="addStudents()"><span class="glyphicon glyphicon-upload"></span>&nbsp;アップロード</button>
+      <span *ngIf="stuSuccessful" class="alert alert-success">正常に登録しました</span>
+      <span *ngIf="stuErr!=null&&stuErr" class="alert alert-danger">登録に失敗しました</span>
+      <hr />
+      <label>
+        教員登録
+      </label>
+      <input type="file" accept="text/xlsx" (change)="fileOnChange($event, 'teacherData')"/>
+      <button [disabled]="sending" class="btn btn-info pink" (click)="addTeachers()"><span class="glyphicon glyphicon-upload"></span>&nbsp;アップロード</button>
+      <span *ngIf="teaSuccessful" class="alert alert-success">正常に登録しました</span>
+      <span *ngIf="teaErr!=null&&teaErr" class="alert alert-danger">登録に失敗しました</span>
+      <hr />
+      <label>
+        管理者登録
+      </label>
+      <input type="file" accept="text/xlsx" (change)="fileOnChange($event, 'adminData')"/>
+      <button [disabled]="sending" class="btn btn-info pink" (click)="addAdmin()"><span class="glyphicon glyphicon-upload"></span>&nbsp;アップロード</button>
+      <span *ngIf="admSuccessful" class="alert alert-success">正常に登録しました</span>
+      <span *ngIf="admErr!=null&&admErr" class="alert alert-danger">登録に失敗しました</span>
+      <hr />
+    </form>
+  </div>
+</div>

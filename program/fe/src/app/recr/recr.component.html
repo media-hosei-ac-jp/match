@@ -1,0 +1,653 @@
+<div *ngFor="let recr of recrs">
+  <h3>{{recr.setting.title}}</h3>
+  <div *ngIf="recr&&recr.tagArray">
+    <p>
+      開始
+      <span class="glyphicon glyphicon-play" [innerHTML]="recr.tagArray[0]"></span> 募集情報の登録
+      <span class="glyphicon glyphicon-play" [innerHTML]="recr.tagArray[1]"></span> 応募者の確認
+      <span class="glyphicon glyphicon-play" [innerHTML]="recr.tagArray[2]"></span> 合格者を登録
+      <!--
+    	<span class="glyphicon glyphicon-play" [innerHTML]="recr.tagArray[3]"></span> 合格者一覧を事務に提出
+    	<span class="glyphicon glyphicon-play" [innerHTML]="recr.tagArray[4]"></span> 合否を通知
+    -->
+      <span class="glyphicon glyphicon-play"></span> 終了
+    </p>
+  </div>
+  <div class="row">
+
+    <div class="col-sm-6">
+      <h4>概要</h4>
+      <ul class="bg-info">
+        <li>
+          募集情報入力期間： {{ recr.setting.recruitmentStartDate | dateParse | date: 'yyyy年M月d日 H時mm分' }} 〜 {{ recr.setting.recruitmentEndDate | dateParse | date: 'M月d日 H時mm分' }}
+        </li>
+
+        <li>
+          応募受付期間：{{recr.setting.applicationStartDate | dateParse | date: 'yyyy年M月d日 H時mm分'}} 〜 {{recr.setting.applicationEndDate | dateParse | date: 'M月d日 H時mm分' }}
+        </li>
+        <li>
+          <!--
+        複数ゼミへ応募：{{ multipost }}
+        <span *ngIf="recr.setting.maximum > 0">（最大応募可能数: {{ settingData.setting.maximum }}）</span>
+      -->
+          <span> 最大応募可能数: {{ recr.setting.maximum }}</span>
+        </li>
+        <li>応募状況公開：{{ recr.setting.displayType=='ALWAYS'? "リアルタイムに表示":"応募受付締め切り後に表示" }}
+        </li>
+
+        <li>
+          選考実施期間： {{ recr.setting.selectionStartDate | dateParse | date: 'yyyy年M月d日 H時mm分' }} 〜 {{ recr.setting.selectionEndDate | dateParse | date: 'M月d日 H時mm分' }}
+        </li>
+        <li>
+          合格先ゼミ登録期間： {{ recr.setting.registrationStartDate | dateParse | date: 'yyyy年M月d日 H時mm分' }} 〜 {{ recr.setting.registrationEndDate | dateParse | date: 'M月d日 H時mm分' }}
+        </li>
+        <li *ngIf="recr.setting.addSelectionStartDate != null">
+          追加選考実施期間： {{ recr.setting.addSelectionStartDate | dateParse | date: 'yyyy年M月d日 H時mm分' }} 〜 {{ recr.setting.addSelectionEndDate | dateParse | date: 'M月d日 H時mm分' }}
+        </li>
+        <li *ngIf="recr.setting.addRegistrationStartDate != null">
+          追加合格先ゼミ登録期間： {{ recr.setting.addRegistrationStartDate | dateParse | date: 'yyyy年M月d日 H時mm分' }} 〜 {{ recr.setting.addRegistrationEndDate | dateParse | date: 'M月d日 H時mm分' }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="col-sm-6">
+      <div class="panel panel-default">
+
+        <div class="panel-heading">募集フォーム</div>
+        <div class="panel-body">
+          <div *ngIf="recr.setting.recruitmentStartDate<nowStr && nowStr< recr.setting.recruitmentEndDate">
+
+            <span class="text-danger">*</span><span class="small">…必須項目</span>
+            <p>募集情報は募集情報登録期間中は何度でも更新でき、応募受付開始時に学生に公開されます。</p>
+
+            <form class="form-horizontal" #f="ngForm" name="recruitment-{{recr.id}}" method="post">
+              <h4>募集定員</h4>
+              <div class="form-group" *ngIf="recr.grade1Upper!=0">
+                <label for="grade1-{{recr.id}}" class="col-sm-7">
+                現1年生<span class="text-danger">*</span> <small>(半角数字)</small><br />
+                {{recr.grade1Lower!=null?recr.grade1Lower:0}}以上  <span *ngIf="recr.grade1Upper"> {{recr.grade1Upper}}以下</span> の範囲で入力してください。
+              </label>
+                <div class="col-sm-4">
+                  <input name="grade1-{{recr.id}}" id="grade1-{{recr.id}}" type="number" class="form-control" [(ngModel)]="recr.grade1" [required]="recr.grade1Upper!=0" [min]="recr.grade1Lower" [max]="recr.grade1Upper" />
+                </div>
+              </div>
+
+              <div class="form-group" *ngIf="recr.grade2Upper!=0">
+                <label for="grade2-{{recr.id}}" class="col-sm-7">
+                現2年生<span class="text-danger">*</span> <small>(半角数字)</small><br />
+                {{recr.grade2Lower!=null?recr.grade2Lower:0}}以上
+                <span *ngIf="recr.grade2Upper"> {{recr.grade2Upper}}以下</span> の範囲で入力してください。
+              </label>
+                <div class="col-sm-4">
+                  <input name="grade2-{{recr.id}}" id="grade2-{{recr.id}}" type="number" class="form-control" [(ngModel)]="recr.grade2" [required]="recr.grade2Upper!=0" [min]="recr.grade2Lower" [max]="recr.grade2Upper" />
+                </div>
+              </div>
+
+              <div class="form-group" *ngIf="recr.grade3Upper!=0">
+                <label for="grade3-{{recr.id}}" class="col-sm-7">
+                現3年生<span class="text-danger">*</span> <small>(半角数字)</small><br />
+                {{recr.grade3Lower!=null?recr.grade3Lower:0}}以上  <span *ngIf="recr.grade3Upper"> {{recr.grade3Upper}}以下</span> の範囲で入力してください。
+              </label>
+                <div class="col-sm-4">
+                  <input name="grade3-{{recr.id}}" id="grade3-{{recr.id}}" type="number" class="form-control" [(ngModel)]="recr.grade3" [required]="recr.grade3Upper!=0" [min]="recr.grade3Lower" [max]="recr.grade3Upper" />
+                </div>
+              </div>
+
+              <div class="form-group" *ngIf="recr.grade4Upper!=0">
+                <label for="grade4-{{recr.id}}" class="col-sm-7">
+              現4年生<span class="text-danger">*</span> <small>(半角数字)</small><br />
+              {{recr.grade4Lower!=null?recr.grade4Lower:0}}以上  <span *ngIf="recr.grade4Upper"> {{recr.grade4Upper}}以下</span> の範囲で入力してください。
+            </label>
+                <div class="col-sm-4">
+                  <input name="grade4-{{recr.id}}" id="grade4-{{recr.id}}" type="number" class="form-control" [(ngModel)]="recr.grade4" [required]="recr.grade4Upper!=0" [min]="recr.grade4Lower" [max]="recr.grade4Upper" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-12" for="info-{{recr.id}}">選考方法
+            <span class="text-danger">*</span><br />
+            <small>面接、試験、レポートなどの説明を入力してください。（提出方法や、日時、場所など）
+            </small>
+          </label>
+                <div class="col-sm-12">
+                  <textarea name="info-{{recr.id}}" id="info-{{recr.id}}" [(ngModel)]="recr.info" placeholder="" class="form-control" [rows]="getRows(recr.info,10)" required>
+              </textarea>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="col-sm-12">
+                  <button [disabled]="sending || !f.valid" class="btn btn-info" (click)="putRecr(recr)"><span class="glyphicon glyphicon-floppy-disk"></span>&nbsp;更新する</button>
+                  <!--
+          <a href="#" style="margin: 20px" class="btn btn-info blue" (click)="printRecr()"><span class="glyphicon glyphicon-print"></span>&nbsp;募集情報を印刷して事務に提出</a>
+        -->
+                </div>
+              </div>
+            </form>
+          </div>
+          <!-- 期間前 -->
+          <div *ngIf="nowStr<recr.setting.recruitmentStartDate">
+            募集情報の登録開始までお待ちください。
+          </div>
+
+          <!-- 期間後 -->
+          <div *ngIf="nowStr>recr.setting.recruitmentEndDate">
+            <h4>募集定員</h4>
+            <div *ngIf="recr.grade1Upper!=0">
+              <label for="grade1-{{recr.id}}">
+          現1年生: {{recr.grade1}}
+        </label>
+            </div>
+            <div *ngIf="recr.grade2Upper!=0">
+              <label for="grade2-{{recr.id}}">
+          現2年生: {{recr.grade2}}
+        </label>
+            </div>
+            <div *ngIf="recr.grade3Upper!=0">
+              <label for="grade3-{{recr.id}}">
+          現3年生: {{recr.grade3}}
+        </label>
+            </div>
+            <div *ngIf="recr.grade4Upper!=0">
+              <label for="grade4-{{recr.id}}">
+          現4年生: {{recr.grade4}}
+        </label>
+            </div>
+
+
+            <h4>選考方法</h4>
+
+            <div style="white-space: pre-wrap">{{recr.info}}</div>
+          </div>
+
+          <!-- 印刷 -->
+          <div id="print-recr-{{recr.id}}" class="clearfix print">
+            <h2 class="center"><small>{{recr.setting.title}}<br></small>{{recr.seminar.title}} ゼミ生募集票</h2>
+            <div class="col_12 inner column">
+              <div class="inner">
+                <h4>募集人数</h4>
+                <ul>
+                  <li *ngIf="recr.grade1>0">現1年生： {{recr.grade1}}名</li>
+                  <li *ngIf="recr.grade2>0">現2年生： {{recr.grade2}}名</li>
+                  <li *ngIf="recr.grade3>0">現3年生： {{recr.grade3}}名</li>
+                  <li *ngIf="recr.grade4>0">現4年生： {{recr.grade4}}名</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col_12 inner column">
+              <div class="inner">
+                <h4>選考方法</h4>
+                <ul>
+                  <li style="white-space: pre-wrap">{{recr.info}}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="recr.saved" class="col-sm-offset-8">
+            <button class="btn btn-default" (click)="printRecr(recr.id)">募集情報を印刷する</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 選択画面 -->
+    <div *ngIf="nowStr>recr.setting.applicationStartDate">
+      <h4>応募者一覧 ({{recr.apps?recr.apps.length:0}}名)</h4>
+
+      <div id="print-sel-{{recr.id}}" class="clearfix print-t" style="display: none">
+        <h2 class="center" style="text-align: center"><small>{{recr.setting.title}}<br></small>{{recr.seminar.title}} 合格者</h2>
+        <div *ngFor="let apps of recr.passedApps; let i = index" class="col_12 inner column">
+          <div *ngIf="i>=1" class="inner">
+            <h4>{{i}}年生 {{apps.length}}名</h4>
+            <div *ngIf="apps.length==0">
+              該当者なし
+            </div>
+            <div *ngIf="apps.length>0">
+              <table style="width:100%">
+                <tbody>
+                  <tr>
+                    <td>
+                      <table class="bordered" style="width:100%">
+                        <thead>
+                          <tr>
+                            <th>
+                              学生証番号
+                            </th>
+                            <th>
+                              名前
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let app of apps; let i = index" [hidden]="i>=apps.length/2">
+                            <td>
+                              {{app.owner.uid}}
+                            </td>
+                            <td>
+                              {{app.owner.familyName}} {{app.owner.givenName}}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                    <td>
+                      <table class="bordered" style="width:100%">
+                        <thead>
+                          <tr>
+                            <th>
+                              学生証番号
+                            </th>
+                            <th>
+                              名前
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let app of apps; let i = index" [hidden]="i<apps.length/2">
+                            <td>
+                              {{app.owner.uid}}
+                            </td>
+                            <td>
+                              {{app.owner.familyName}} {{app.owner.givenName}}
+                            </td>
+                          </tr>
+                          <tr *ngIf="apps.length%2==1">
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+        </div>
+        <table style="width:100%">
+          <tr>
+            <td style="border-style: solid; width: 50%">
+              <ul>
+                <li>
+                  □ 追加募集なし（最終決定）
+                </li>
+                <li>
+                  □ 追加募集あり
+                </li>
+              </ul>
+              <!--
+              <div style="text-align: center">*1、2次募集のみ</div> -->
+            </td>
+            <td style="border-style: solid; width:50%; text-align: top">
+              連絡事項
+              <br />
+              <br />
+              <br />
+              <br />
+            </td>
+        </table>
+      </div>
+
+      
+      <div id="print-sel-add-{{recr.id}}" class="clearfix print-t" style="display: none">
+        <h2 class="center" style="text-align: center"><small>{{recr.setting.title}}<br></small>{{recr.seminar.title}} 追加合格者</h2>
+        <div *ngFor="let apps of recr.addPassedApps; let i = index" class="col_12 inner column">
+          <div *ngIf="i>=1" class="inner">
+            <h4>{{i}}年生 {{apps.length}}名</h4>
+            <div *ngIf="apps.length==0">
+              該当者なし
+            </div>
+            <div *ngIf="apps.length>0">
+              <table style="width:100%">
+                <tbody>
+                  <tr>
+                    <td>
+                      <table class="bordered" style="width:100%">
+                        <thead>
+                          <tr>
+                            <th>
+                              学生証番号
+                            </th>
+                            <th>
+                              名前
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let app of apps; let i = index" [hidden]="i>=apps.length/2">
+                            <td>
+                              {{app.owner.uid}}
+                            </td>
+                            <td>
+                              {{app.owner.familyName}} {{app.owner.givenName}}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                    <td>
+                      <table class="bordered" style="width:100%">
+                        <thead>
+                          <tr>
+                            <th>
+                              学生証番号
+                            </th>
+                            <th>
+                              名前
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let app of apps; let i = index" [hidden]="i<apps.length/2">
+                            <td>
+                              {{app.owner.uid}}
+                            </td>
+                            <td>
+                              {{app.owner.familyName}} {{app.owner.givenName}}
+                            </td>
+                          </tr>
+                          <tr *ngIf="apps.length%2==1">
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+        </div>
+        <table style="width:100%">
+          <tr>
+            <td style="border-style: solid; width: 50%">
+              <ul>
+                <li>
+                  □ 追加募集なし（最終決定）
+                </li>
+                <li>
+                  □ 追加募集あり
+                </li>
+              </ul>
+              <!--
+              <div style="text-align: center">*1、2次募集のみ</div> -->
+            </td>
+            <td style="border-style: solid; width:50%; text-align: top">
+              連絡事項
+              <br />
+              <br />
+              <br />
+              <br />
+            </td>
+        </table>
+      </div>
+
+      <div class="pull-right">
+        <label><input type="checkbox" (change)="changeShowPr($event)" [(ngModel)]="showPr"/> 自己PRを表示する</label>
+
+        <button (click)="downloadApps(recr.apps)" class="btn btn-default">応募者情報をダウンロードする</button>
+        <button class="btn btn-default" (click)="printSel(recr.id)" >合否情報を印刷する</button>
+        <button *ngIf="recr.addApps" class="btn btn-default" (click)="printAddSel(recr.id)" >追加合否情報を印刷する</button>
+      </div>
+
+      <!--追加合格入力-->
+      <div *ngIf="recr.addApps">
+        <h4>追加合格登録フォーム ({{recr.addApps.length}}名)</h4>
+        <form name="addSelectForm">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>合否選択</th>
+                <th>状態</th>
+                <th>学生証番号</th>
+                <th>氏名</th>
+                <th>性別</th>
+                <th>所属</th>
+                <th>学年</th>
+                <th [ngClass]="{'col-sm-6': showPr}">自己PR</th>
+                <th>詳細</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let app of recr.addApps" [ngClass]="{'success': app.confirmed, 'info': !app.confirmed&&app.passed, 'danger': app.passed==false || app.deleted, 'warning': !app.confirmed&&app.passed&&app.owner.confirmed}">
+                <td>
+                  <select [disabled]="!(recr.setting.addSelectionStartDate<nowStr && nowStr<recr.setting.addSelectionEndDate)
+                    ||recr.addConfirmed" name="app-{{app.id}}-passed" [(ngModel)]="app.passed"
+                  (change)="updateAddSelectionValid(recr)" requied>
+          <option [ngValue]="false">不合格</option>
+          <option [ngValue]="true">合格</option>
+        </select>
+                </td>
+                <td>
+                  <span *ngIf="app.passed&&!app.confirmed&&!app.owner.confirmed">ゼミ未確定</span>
+                  <span *ngIf="app.passed==null">合否未選択</span>
+                  <span *ngIf="app.confirmed">このゼミに確定済み</span>
+                  <span *ngIf="!app.confirmed&&app.owner.confirmed">他のゼミに確定済み</span>
+                  <span *ngIf="app.deleted">応募取り消し</span>
+                </td>
+                <td>{{app.owner.uid}}</td>
+                <td>{{app.owner.familyName}} {{app.owner.givenName}}</td>
+                <td>{{app.owner.gender}}</td>
+                <td>{{app.owner.department}} {{app.owner.faculty}}</td>
+                <td>{{app.owner.grade}}</td>
+                <td>
+                <div *ngIf="showPr; then thenBlock;else elseBlock">
+                </div>
+                <ng-template #thenBlock>
+                  <div style="white-space: pre-wrap">{{app.pr}}</div>
+                </ng-template>
+                <ng-template #elseBlock>
+                  <button class="btn btn-default"  (click)="openPrModal(app)">開く</button>
+                </ng-template>
+                </td>
+                <td>
+                  <button class="btn btn-default"  (click)="openInfoModal(app.id)">開く</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div *ngIf="nowStr>recr.setting.addSelectionStartDate&&nowStr<recr.setting.addSelectionEndDate">
+            <span *ngIf="!recr.addSelectionValid" class="text-danger">全ての合否を選択してください。</span>
+            <button [disabled]="sending || recr.addConfirmed || !recr.addSelectionValid" (click)="confirmAddSelection(recr)" class="btn btn-success">合否選択を確定する</button>
+            <span *ngIf="recr.addConfirmed" class="text-danger">合否は確定済みです。</span> ※一度確定すると取り消しはできないので注意してください。
+          </div>
+        </form>
+      </div>
+
+      <!--合否入力-->
+      <!-- <div *ngIf="nowStr<recr.setting.selectionEndDate"> -->
+      <div>
+        <h4>合否登録フォーム</h4>
+        <form name="selectForm">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>合否選択</th>
+                <th>状態</th>
+                <th>学生証番号</th>
+                <th>氏名</th>
+                <th>性別</th>
+                <th>所属</th>
+                <th>学年</th>
+                <th [ngClass]="{'col-sm-6': showPr}">自己PR</th>
+                <th>詳細</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let app of recr.apps" [ngClass]="{'success': app.confirmed, 'info': !app.confirmed&&app.passed, 'danger': app.passed==false || app.deleted, 'warning': !app.confirmed&&app.passed&&app.owner.confirmed}">
+                <td>
+                  <select [disabled]="nowStr<recr.setting.selectionStartDate||recr.confirmed" name="app-{{app.id}}-passed" [(ngModel)]="app.passed"
+                  (change)="updateSelectionValid(recr)" requied>
+          <option [ngValue]="false">不合格</option>
+          <option [ngValue]="true">合格</option>
+        </select>
+                </td>
+                <td>
+                  <span *ngIf="app.passed&&!app.confirmed&&!app.owner.confirmed">ゼミ未確定</span>
+                  <span *ngIf="app.passed==null">合否未選択</span>
+                  <span *ngIf="app.confirmed">このゼミに確定済み</span>
+                  <span *ngIf="!app.confirmed&&app.owner.confirmed">他のゼミに確定済み</span>
+                  <span *ngIf="app.deleted">応募取り消し</span>
+                </td>
+                <td>{{app.owner.uid}}</td>
+                <td>{{app.owner.familyName}} {{app.owner.givenName}}</td>
+                <td>{{app.owner.gender}}</td>
+                <td>{{app.owner.department}} {{app.owner.faculty}}</td>
+                <td>{{app.owner.grade}}</td>
+                <td>
+
+                <div *ngIf="showPr; then thenBlock;else elseBlock">
+                </div>
+                <ng-template #thenBlock>
+                  <div style="white-space: pre-wrap">{{app.pr}}</div>
+                </ng-template>
+                <ng-template #elseBlock>
+                  <button class="btn btn-default"  (click)="openPrModal(app)">開く</button>
+                  <div style="display:none">
+                    <div id="pr-{{app.id}}">{{app.pr}}</div>
+                  </div>
+                </ng-template>
+                </td>
+                <td>
+                  <button class="btn btn-default"  (click)="openInfoModal(app.id)">開く</button>
+                  <!--
+                  <span class="glyphicon glyphicon-info-sign"  (click)="openInfoModal(app.id)"></span>
+                -->
+                        <div id="infomodal-{{app.id}}" style="display:none">
+                      <table *ngIf="app.owner as owner" class="table table-bordered table-striped">
+                        <tbody>
+                          <tr>
+                            <td> 学生証番号 </td>
+                            <td> {{owner.uid}} </td>
+                          </tr>
+                          <tr>
+                            <td> 名前 </td>
+                            <td> {{owner.familyName}} {{owner.givenName}} </td>
+                          </tr>
+                          <tr>
+                            <td> 名前（よみ） </td>
+                            <td> {{owner.kanaFamilyName}} {{owner.kanaGivenName}} </td>
+                          </tr>
+                          <tr>
+                            <td> メールアドレス </td>
+                            <td> {{owner.email}} </td>
+                          </tr>
+                          <tr>
+                            <td> メールアドレス(携帯) </td>
+                            <td> {{owner.mobileEmail}} </td>
+                          </tr>
+                          <tr>
+                            <td> 電話番号 </td>
+                            <td> {{owner.phoneNumber}} </td>
+                          </tr>
+                          <!-- <tr>
+                            <td> 携帯番号 </td>
+                            <td> {{owner.mobileNumber}} </td>
+                          </tr> -->
+                          <tr>
+                            <td> 所属 </td>
+                            <td> {{owner.department}} {{owner.faculty}} </td>
+                          </tr>
+                          <tr>
+                            <td> 学年 </td>
+                            <td> {{owner.grade}} </td>
+                          </tr>
+                          <tr>
+                            <td> 性別 </td>
+                            <td> {{owner.gender}} </td>
+                          </tr>
+                          <!-- <tr>
+                            <td> 誕生日 </td>
+                            <td> {{owner.birthday | dateParse | date: 'yyyy-MM-dd'}} </td>
+                          </tr>
+                          <tr>
+                            <td> 郵便番号 </td>
+                            <td> {{owner.postalcode}} </td>
+                          </tr>
+                          <tr>
+                            <td> 住所 </td>
+                            <td> {{owner.address}} </td>
+                          </tr>
+                          <tr>
+                            <td> 部活動、サークル等 </td>
+                            <td> {{owner.club}} </td>
+                          </tr>
+                          <tr>
+                            <td> 趣味 </td>
+                            <td> {{owner.hobby}} </td>
+                          </tr>
+                          <tr>
+                            <td> 特技、資格等 </td>
+                            <td> {{owner.qualification}} </td>
+                          </tr>
+                          <tr>
+                            <td> 出身高校 </td>
+                            <td> {{owner.highschool}} </td>
+                          </tr>
+                          <tr>
+                            <td> facebook、ブログ等のURL </td>
+                            <td> {{owner.url}} </td>
+                          </tr> -->
+                        </tbody>
+                      </table>
+                    </div>
+
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div *ngIf="nowStr>recr.setting.selectionStartDate&&nowStr<recr.setting.selectionEndDate">
+            <span *ngIf="!recr.selectionValid" class="text-danger">全ての合否を選択してください。</span>
+            <button [disabled]="sending || recr.confirmed || !recr.selectionValid" (click)="confirmSelection(recr)" class="btn btn-success">合否選択を確定する</button>
+            <span *ngIf="recr.confirmed" class="text-danger">合否は確定済みです。</span> ※一度確定すると取り消しはできないので注意してください。
+          </div>
+        </form>
+      </div>
+
+      <!-- 結果確認 -->
+      <!--
+<div *ngIf="nowStr>recr.setting.selectionEndDate">
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+    <th>合否選択</th>
+    <th>状態</th>
+    <th>学生証番号</th>
+    <th>氏名</th>
+    <th>性別</th>
+    <th>所属</th>
+    <th>学年</th>
+    <th>自己PR</th>
+    <th>詳細</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let app of recr.apps; let i = index" [ngClass]="{'info': i==0, 'warning': i==1}">
+      <td>
+        合格
+      </td>
+      <td>
+        <span *ngIf="i==0">このゼミに確定</span>
+        <span *ngIf="i==1">他のゼミに確定</span>
+      </td>
+      <td>{{app.owner.uid}}</td>
+      <td>{{app.owner.familyName}} {{app.owner.givenName}}</td>
+      <td>{{app.owner.gender}}男性</td>
+      <td>{{app.owner.department}} {{app.owner.faculty}}</td>
+      <td>{{app.owner.grade}}</td>
+      <td>{{app.pr}}</td>
+      <td>
+        <span class="glyphicon glyphicon-info-sign"></span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+-->
+    </div>
+  </div>
+</div>

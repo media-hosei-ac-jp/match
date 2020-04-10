@@ -1,0 +1,62 @@
+<div>
+    <form name="sem" id="sem" enctype="multipart/form-data" method="post" class="form-horizontal">
+    	<span>
+        <span class="text-danger">*</span>
+        <span class="small">…必須項目</span>
+      </span>
+
+      <div class="form-group">
+
+    	<label for="title" class="col-sm-2 control-label">
+        ゼミの名称
+        <span class="text-danger">*</span>
+      </label>
+      <div class="col-sm-3">
+
+    	<input name="title" id="title" type="text" [(ngModel)]="seminarData.title" placeholder="" class="form-control" required />
+    </div>
+    </div>
+
+      <div class="form-group">
+    	<label for="file" class="col-sm-2 control-label">
+        ゼミ紹介PDFファイル
+      </label>
+      <div class="col-sm-5">
+
+    	<input name="file" id="file" type="file" accept="application/pdf" placeholder="" class="form-control" (change)="fileChange($event)" class="" />
+      <span *ngIf="seminarData.file&&seminarData.file.id">アップロード済みです。</span>
+      <a *ngIf="seminarData.file&&seminarData.file.id" [href]="fileApiUrl+seminarData.file.id">{{seminarData.file.fileName}}</a>
+      <!--
+      <input type="hidden" id="pdf_file" name="pdf_file" />
+    -->
+    </div>
+    </div>
+
+      <div class="form-group">
+
+    	<label for="url" class="col-sm-2 control-label">
+        ホームページ、ブログ等のURL
+      </label>
+      <div class="col-sm-6">
+    	<input name="url" id="url" type="url" [(ngModel)]="seminarData.url" placeholder="" class="form-control" />
+    </div>
+    </div>
+
+      <div class="form-group">
+    	<label for="description" class="col-sm-2 control-label">
+        ゼミの紹介
+        <br />
+        <small>(任意: 最大400文字まで入力できます)</small>
+      </label>
+      <div class="col-sm-10">
+    	<textarea name="description" id="description" maxlength="400" placeholder="" class="form-control" [(ngModel)]="seminarData.description"
+      [rows]="getRows(seminarData.description, 10)" >
+      </textarea>
+    </div>
+    </div>
+
+    	<div class="pull-right">
+        <button [disabled]="sending" style="margin: 20px" class="btn btn-info" (click)="putSeminar()"><span class="glyphicon glyphicon-floppy-disk"></span>&nbsp;更新する</button>
+      </div>
+    </form>
+</div>

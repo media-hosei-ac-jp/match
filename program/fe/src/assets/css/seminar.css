@@ -1,0 +1,244 @@
+
+/*
+	seminar.css
+	Makoto Miyazaki
+	makoto.miyazaki.dc@hosei.ac.jp 	
+*/
+
+/*---------------------------------
+	OVERRIDES
+-----------------------------------*/
+body {
+	font-family: 'Hiragino Kaku Gothic Pro','ヒラギノ角ゴ Pro W3','メイリオ','ＭＳ Ｐゴシック',sans-serif;
+}
+/*---------------------------------
+	LAYOUT
+-----------------------------------*/
+.w480rb{
+	width:480px;
+	text-align: right;
+	border:1px solid #ccc;
+}
+.w480{
+	width:480px;
+}
+.w360{
+	width:360px;
+}
+.w240rlh{
+	width:240px;
+	text-align: right;
+	line-height: 3;
+}
+.w240{
+	width:240px;
+}
+.w120lh{
+	width:120px;
+	line-height: 3;
+}
+.lh{
+	line-height: 3;
+}
+.w72{
+	width:72px;
+}
+.w80{
+	width:80px;
+}
+.w16{
+	width:16px;
+}
+.w32{
+	width:32px;
+}
+.w48{
+	width:48px;
+}
+.w64{
+	width:64px;
+}
+.w128{
+	width:128px;
+}
+.w160{
+	width:160px;
+}
+.w320{
+	width:320px;
+}
+.w300{
+	width:300px;
+}
+.w480l{
+	width:480px;
+	text-align: left;
+}
+.col_max{
+	width:100%;
+}
+.m8800{
+	margin: 8px 8px 0px 0px;
+}
+.m0880{
+	margin: 0px 8px 8px 0px;
+}
+.m0888{
+	margin: 0px 8px 8px 8px;
+}
+.m0008{
+	margin: 0px 0px 0px 8px;
+}
+.req {
+	color:red;
+	font-size:small;
+	vertical-align:top;
+}
+.small{
+	font-size:small;
+}
+.margin-rl{
+	margin-left:240px;
+	margin-right:240px;
+}
+.margin-l{
+	margin-left:240px;
+}
+
+.logout{
+	margin: 8px;
+	text-align: right;
+}
+
+.icon span{
+	 line-height: 1.4;
+}
+
+.profile{
+	max-width: 32px;
+	max-height: 32px;
+}
+
+.p240lr{
+	padding-letf:240px;
+	padding-right:240px;
+}
+
+
+.bgc-pink{
+	background-color: pink;
+}
+
+.bgc-lightgreen{
+	background-color: lightgreen;
+}
+
+.panel{
+	border: 1px solid #DCDCDC;
+	padding: 8px;
+	background-color: #E5E5E5;
+}
+
+.border1s{
+	border:1px solid #DCDCDC;
+	margin:1px;
+}
+
+.margin-b16{
+	margin-bottom:16px;
+}
+
+select.error{
+    border: 1px solid red;
+}
+
+select.f{
+	margin: 8px 8px 0px 8px;
+	padding: 5px;
+}
+
+.readonly{
+	background-color: ButtonShadow;
+}
+textarea.h80{
+	height: 80px;
+}
+textarea.h80m8{
+	margin: 8px;
+	width: 60%;
+	height: 80px;
+}
+
+.ui-datepicker-month {
+    width: 44%;
+}
+
+.ui-datepicker-year {
+    width: 44%;
+}
+
+select.f{
+	margin: 8px 8px 0px 8px;
+	padding: 5px;
+}
+
+.info{
+    border-style: dotted;
+    margin: 16px;
+    padding: 8px;
+}
+
+.home{
+    min-height: 175px;
+}
+
+.pass00{
+	background-color: #FFFF66 !important;
+}
+
+.pass20{
+	color: #666666 !important;
+}
+
+.pass10{
+	background-color: #FFCCCC !important;
+}
+
+.pass10_{
+	background-color: #FFFF99 !important;
+	color: #666666 !important;
+}
+
+.pass10__{
+	background-color: #FFFF99 !important;
+	color: #666666 !important;
+}
+
+.pass11{
+	background-color: #99CCFF;
+}
+
+.pass11_{
+	background-color: #99CCFF;
+}
+
+.pass20_{
+	background-color: #99FF00 !important;
+	color: #666666 !important;
+}
+
+.pass20__{
+	background-color: #99FF00 !important;
+	color: #666666 !important;
+}
+td.appl{
+	border-right: 1px solid #DDDDDD;
+}
+div.strong{
+	font-weight: bold;
+}
+
+table.striped thead th {
+	background: none repeat scroll 0 0 #DDDDDD;
+}
+
